@@ -20,6 +20,60 @@ public interface List<E> extends Collection<E> {}
 
 list集合是有序的，允许有重复元素，可以通过索引直接操作相应的元素。
 
+#### 3.  Iterator接口
+
+```java
+public interface Iterator<E> {}
+```
+
+通过Iterator可以遍历集合。Iterator取代了Enumeration接口。
+
+**Iterator与Enumeration的区别：**
+
+1.  Enumeration只有2个函数接口。通过Enumeration，我们只能读取集合的数据，而不能对数据进行修改
+
+   Iteration只有3个函数的接口。Iteration除了能读取集合的数据之外，也能对数据进行删除
+
+2.  Enumeration接口作为一个遗留接口主要用来实现例如 Vector HashTable Stack 的遍历，而Iterator作为比较新的接口，实现了Collection框架下大部分实现类的遍历比如说 ArrayList LinkedList HashSet LinkedHashSet TreeSet HashMap LinkedHashMap TreeMap 等等
+
+3. Iterator支持Fail-Fast机制，当一个线程在遍历时，不允许另外一个线程对数据进行修改（除非调用实现了Iterator的Remove方法）。因此Iterator被认为是安全可靠的遍历方式
+
+虽然两个接口的功能是重复的，但是Iterator由于比Enumeration多了remove方法且接口方法名字更短，因此推荐在后面的类中使用Iterator。
+
+#### 4.  ListIterator接口
+
+```java
+public interface ListIterator<E> extends Iterator<E> {}
+```
+
+ListIterator的cursor position是处于两个元素之间（previous()和next()两个元素），Iterator的cursor position是指上一个元素的位置。
+
+ **ListIterator接口与Iterator接口的区别：**
+
+1.Iterator在使用过程中，不能对集合元素进行添加操作，否则会抛出异常。
+
+2.使用范围不同；Iterator可以在所有集合中使用，而ListIterator只能在List类型与子类型
+
+3.listIterator有add方法，可以向集合中添加元素，而iterator不能。
+
+4.listiterator和iterator都有hasnext和next方法可以顺序遍历元素， 但是listiterator有hasprevious和previous方法，可以逆向遍历元素
+
+5.listiterator可以定位当前的索引位置 nextIndex和previousIndex可以实现，iterator没有此功能
+
+6.listiterator可以实现对对象的修改set()方法可以实现，iterator仅可以遍历，不能修改。
+
+7.listIterator可以从某一个地方开始遍历
+
+**迭代器有三个属性：**
+
+```java
+int cursor;       // index of next element to return，下次要返回的元素索引
+int lastRet = -1; // index of last element returned; -1 if no such，上次返回的元素索引
+int expectedModCount = modCount;	//记录创建迭代器时的modCount，该参数用来判断在迭代的时候是否对集合进行了操作。
+```
+
+迭代器中的remove()、set()等方法都是对上一次返回的值，即上一次返回值的索引（lastRet）处进行修改。
+
 
 
 ### 类
@@ -226,15 +280,15 @@ int e5 = e4 + seventh;
 
 如果，这五个数互相不相等，则选取第二个和第四个分别作为pivot1和pivot2，然后对数组进行交换、划分
 
-![image-20211214173502117](算法img/image-20211214173502117-16394745036351.png)
+![image-20211214173502117](java源码img/image-20211214173502117-16394745036351.png)
 
 然后，分别对三个区间进行递归。但如果中间的区间太大，需要对中间区域进行如下操作：（等于pivot1的元素移到左面，等于pivot2的元素移到右面，这样中间区域就稍微缩小一点，再进行递归）
 
-![image-20211214173959113](算法img/image-20211214173959113-16394748012882.png)
+![image-20211214173959113](java源码img/image-20211214173959113-16394748012882.png)
 
 如果五个数存在相等的情况，选取第三个元素作为pivot，对数组进行交换、划分：
 
-![image-20211214174238385](算法img/image-20211214174238385-16394749594323.png)
+![image-20211214174238385](java源码img/image-20211214174238385-16394749594323.png)
 
 然后，对左右两部分进行递归。
 
@@ -278,6 +332,34 @@ protected transient int modCount = 0;
 ```
 
 这个属性是AbstractArrayList中的，这个属性表示集合被改变的次数，增加元素，删除元素（Structural modification）它都会加1。该属性主要是用在迭代中，对集合进行迭代的时候modCount属性改变可能就会出错。在使用迭代器遍历集合的时候同时修改集合元素，可能会出现ConcurrentModifiedException。这个属性可以使迭代器引进快速失败机制。（当然，这个属性是可选的。如果你不想在AbstractArrayList子类的迭代器中引进快速失败机制，则可以不使用）
+
+```java
+private static final int DEFAULT_CAPACITY = 10;   //默认容器大小
+```
+
+
+
+#### 1.4  LinkedList
+
+```java
+public class LinkedList<E>
+    extends AbstractSequentialList<E>
+    implements List<E>, Deque<E>, Cloneable, java.io.Serializable
+{}
+```
+
+LinkedList它的底层是使用的双向链表的形式进行存储数据。数据结构如下：
+
+![img](java源码img/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3Rhbmd5dWFuX3NpYmFs,size_16,color_FFFFFF,t_70)
+
+
+
+#### 1.5  HashMap
+
+```java
+public class HashMap<K,V> extends AbstractMap<K,V>
+    implements Map<K,V>, Cloneable, Serializable {}
+```
 
 
 
@@ -589,7 +671,7 @@ ThreadLocal实例一般是作为类（与线程相关的类）的静态私有属
 static class ThreadLocalMap {}
 ```
 
-ThreadLocalMap是ThreadLocal的静态内部类，Entry是ThreadLocalMap的静态内部类，继承虚引用。Entry主要两个属性：1. 引用（ThreadLocal的虚引用，key）；2.Object对象（thread-local 对象的副本）
+ThreadLocalMap是ThreadLocal的静态内部类，Entry是ThreadLocalMap的静态内部类，继承虚引用。Entry主要两个属性：1. 引用（ThreadLocal的虚引用，key，与后面的value没有任何关系，他和thread-local对象有关）；2.Object对象（thread-local 对象的副本，不要放thread-local对象）
 
 ##### 属性：
 
@@ -630,6 +712,89 @@ ThreadLocalMap的存储Entry的底层也是利用hash算法，只是解决hash�
 
 结构图：
 
-![image-20211219193012568](算法img/image-20211219193012568-16399134142804.png)
+![image-20211219193012568](java源码img/image-20211219193012568-16399134142804.png)
 
-![查看源图像](算法img/OIP-C.2XanO8W6V_AE9yJEk6bSCAHaDW)
+![查看源图像](java源码img/OIP-C.2XanO8W6V_AE9yJEk6bSCAHaDW)
+
+
+
+## 3.  ref包
+
+### 3.1  Reference
+
+
+
+**软引用（SoftReference）：**
+
+
+
+**弱引用（WeakReference）：**
+
+
+
+**软引用（PhantomReference）：**
+
+
+
+**引用队列（ReferenceQueue）：**
+
+引用队列配合软引用、弱引用、虚引用一起使用。当软、弱引用的对象将要被JVM回收时，会将其加入到引用队列中。虚引用在创建的时候就加入到引用队列中。
+
+通过引用队列可以了解JVM垃圾回收情况。
+
+
+
+## 4.  annotation包
+
+java注解是在JDK5时引入的新特性，目前大部分框架(如Spring)都使用了注解简化代码并提高编码的效率。
+
+**元注解：**标记其他注解的注解。
+
+1.  @Target 用来约束注解可以应用的地方（如方法、类或字段），其中ElementType是枚举类型。当注解未指定Target值时，则此注解可以用于任何元素之上，多个值使用{}包含并用逗号隔开。
+2. @Retention用来约束注解的生命周期，分别有三个值，**源码级别**（source，注解将被编译器丢弃，该类型的注解信息只会保留在源码里，源码经过编译后，注解信息会被丢弃，不会保留在编译好的class文件里，如，@Override、@SuppressWarnning），**类文件级别**（class，注解在class文件中可用，但会被VM丢弃，该类型的注解信息会保留在源码里和class文件里，在执行的时候，不会加载到虚拟机中，请注意，当注解未定义Retention值时，默认值是CLASS，如Java内置注解，@Deprecated等）或者**运行时级别**（runtime，注解在class文件中可用，但会被VM丢弃（该类型的注解信息会保留在源码里和class文件里，在执行的时候，不会加载到虚拟机中），请注意，当注解未定义Retention值时，默认值是CLASS，如Java内置注解，@Override、@Deprecated、@SuppressWarnning等）
+3. @Documented 被修饰的注解会生成到javadoc中。被这个元注解修饰的注解，通过javadoc生成的帮助文档会有这个注解。
+4. @Inherited 可以让注解被继承，但这并不是真的继承，只是通过使用@Inherited，可以让子类Class对象使用getAnnotations()获取父类被@Inherited修饰的注解
+
+
+
+**java内置注解：**
+
+- @Override：用于标明此方法覆盖了父类的方法
+- @Deprecated：用于标明已经过时的方法或类
+- @SuppressWarnnings:用于有选择的关闭编译器对类、方法、成员变量、变量初始化的警告
+
+
+
+**注解元素及其基本类型：**
+
+​			注解没没有任何元素的注解称为标记注解（marker annotation）
+
+注解元素的基本类型：所有基本类型、String、Class、enum、Annotation、以及他们对应的数组。
+
+定义方式：
+
+```java
+public @interface DBTable {    
+    String name() default ""; 			//类似于方法的声明
+}
+```
+
+声明注解元素时可以使用基本类型但不允许使用任何包装类型。
+
+编译器对元素的默认值有些过分挑剔。首先，元素不能有不确定的值。也就是说，元素必须要么具有默认值，要么在使用注解时提供元素的值。其次，对于非基本类型的元素，无论是在源代码中声明，还是在注解接口中定义默认值，都不能以null作为值。
+
+注解中定义了名为value的元素，并且在使用该注解时，如果该元素是唯一需要赋值的一个元素，那么此时无需使用key=value的语法，而只需在括号内给出value元素所需的值即可。这可以应用于任何合法类型的元素，记住，这限制了元素名必须为value。
+
+
+
+**注解与反射：**
+
+为了运行时能准确获取到注解的相关信息，Java在java.lang.reflect 反射包下新增了AnnotatedElement接口，它主要用于表示目前正在 VM 中运行的程序中已使用注解的元素，通过该接口提供的方法可以利用反射技术地读取注解的信息，如反射包的Constructor类、Field类、Method类、Package类和Class类都实现了AnnotatedElement接口。
+
+  
+
+### 1. Annotation接口
+
+注解不支持继承，因此不能使用关键字extends来继承某个@interface，但注解在编译之后，编译器会自动继承Annotation接口。
+
+定义注解都使用@interface，这就表示继承了Annotation接口。
