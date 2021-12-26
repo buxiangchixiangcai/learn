@@ -350,9 +350,7 @@ public class LinkedList<E>
 
 LinkedList它的底层是使用的双向链表的形式进行存储数据。数据结构如下：
 
-![img](java源码img/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3Rhbmd5dWFuX3NpYmFs,size_16,color_FFFFFF,t_70)
-
-
+![image-20211226175400811](C:/Users/fanjunfu/Desktop/java源码/java源码img/image-20211226175400811.png)
 
 #### 1.5  HashMap
 
@@ -715,8 +713,6 @@ ThreadLocalMap的存储Entry的底层也是利用hash算法，只是解决hash�
 结构图：
 
 ![image-20211219193012568](java源码img/image-20211219193012568-16399134142804.png)
-
-![查看源图像](java源码img/OIP-C.2XanO8W6V_AE9yJEk6bSCAHaDW)
 
 
 
