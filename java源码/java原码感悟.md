@@ -350,7 +350,7 @@ public class LinkedList<E>
 
 LinkedList它的底层是使用的双向链表的形式进行存储数据。数据结构如下：
 
-![image-20211226175400811](C:/Users/fanjunfu/Desktop/java源码/java源码img/image-20211226175400811.png)
+![image-20211226175905302](java源码img/image-20211226175905302.png)
 
 #### 1.5  HashMap
 
