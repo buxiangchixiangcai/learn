@@ -361,7 +361,9 @@ public class HashMap<K,V> extends AbstractMap<K,V>
     implements Map<K,V>, Cloneable, Serializable {}
 ```
 
+HashMap的一个bin的数据量超过TREEIFY_THRESHOLD（8）链表就变成红黑树，红黑树进行查找或者增加的时候，会按照二叉搜索树的左小右大进行操作，但是是对key的hash值进行左小右大进行比较，而不是key值本身。因为key是各种类型进行比较不容易，而hash值就是int类型很容易比较大小。
 
+如果一个bin中节点的个数超过TREEIFY_THRESHOLD（8），链表变成红黑树，Node变成TreeNode，属性增多。其实还是以链表的形式存放的，只不过是增加了left、right属性（TreeNode继承LinkedHashMap），能够快速的通过左小右大进行查找，对红黑树的调整也是对left、right、parent等属性进行调整，对next属性的关系不变。
 
 
 
